@@ -98,6 +98,22 @@ def fill_missing_values(df0, df1) -> pd.DataFrame:
     return df0
 
 
+def remove_patients(patient, immunization):
+    """
+    Remove records from patients dataframe that are not present in
+    immunization dataframe
+    df0: patient dataframe
+    df1: immunization dataframe
+    """
+    bad_patid = list(set(list(patient['pat_id'].unique())) - set(list(immunization['pat_id'])))
+    idx = [patient[patient['pat_id'] == i].index.tolist() for i in bad_facid]
+    bad_idx = [item for sublist in idx for item in sublist]
+
+    patient.drop(patient.index[bad_idx], inplace=True)
+    patient = patient.reset_index(drop=True)
+    return patient
+
+
 def preprocess_patients(df0, df1) -> pd.DataFrame:
     """
     Bring all functions to create pre-processed df

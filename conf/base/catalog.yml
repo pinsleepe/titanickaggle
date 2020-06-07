@@ -22,3 +22,7 @@ facilities:
 preprocessed_patients:
   type: pandas.CSVDataSet
   filepath: data/02_intermediate/preprocessed_patients.csv
+
+primary_table:
+  type: pandas.CSVDataSet
+  filepath: data/03_primary/primary_table.csv

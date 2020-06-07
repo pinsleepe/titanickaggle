@@ -5,7 +5,7 @@ import pandas as pd
 # ------------- PATIENTS
 
 
-def remove_unnamed_column(patients) -> pd.DataFrame:
+def remove_unnamed_column_patients(patients) -> pd.DataFrame:
     """
     Remove columns leftover by df to csv conversion.
     """
@@ -105,7 +105,7 @@ def preprocess_patients(patients, facilities) -> pd.DataFrame:
     """
     Bring all functions to create pre-processed df
     """
-    df = remove_unnamed_column(patients)
+    df = remove_unnamed_column_patients(patients)
     df = drop_null_gender(df)
     df = fill_missing_facid(df, facilities)
     df = remove_facilities(df, facilities)
@@ -115,4 +115,72 @@ def preprocess_patients(patients, facilities) -> pd.DataFrame:
 
 # ------------- IMMUNIZATION
 
+def remove_unnamed_column_immunization(immunization) -> pd.DataFrame:
+    """
+    Remove columns leftover by df to csv conversion.
+    """
+    return immunization.drop('Unnamed: 0', 1)
 
+
+def keep_successful(immunization)-> pd.DataFrame:
+    """
+    Remove unsuccessful immunizations.
+    """
+    df = immunization[immunization.successful == True]
+    return df
+
+
+def remove_unsuccesful_columns(immunization):
+    """
+    Remove unsuccessful reason and succesful columns
+    """
+    return immunization.drop(['successful', 'reason_unsuccesful'], 1)
+
+
+def remove_records(patient, immunization) -> pd.DataFrame:
+    """
+    Remove records from immunization dataframe that correspond to unknown patients.
+    df0: patient dataframe
+    df1: immunization dataframe
+    """
+    pat_list = list(patient['pat_id'].unique())
+    idx = [immunization[immunization['pat_id'] == i].index.tolist() for i in pat_list]
+    good_idx = [item for sublist in idx for item in sublist]
+
+    immunization = immunization.loc[good_idx]
+    immunization = immunization.reset_index(drop=True)
+    return immunization
+
+
+def preprocess_immunization(immunization, preprocessed_patients) -> pd.DataFrame:
+    """
+    Bring all functions to create pre-processed df
+    """
+    df = remove_unnamed_column_immunization(immunization)
+    df = keep_successful(df)
+    df = remove_unsuccesful_columns(df)
+    return remove_records(preprocessed_patients, df)
+
+
+# ------------- PRIMARY TABLE
+
+def remove_bad_pat_id(preprocessed_patients, preprocessed_immunization):
+    """
+    Remove patients without immunizations records.
+    """
+    bad_pat_id = list(set(list(preprocessed_patients.pat_id.unique())) -
+                      set(list(preprocessed_immunization.pat_id.unique())))
+    return preprocessed_patients[~preprocessed_patients.pat_id.isin(bad_pat_id)]
+
+
+def build_primary_table(preprocessed_patients, preprocessed_immunization):
+    """
+    Join preprocessed_patients and preprocessed_immunization
+    dataframes. Drop successful == False records.
+    """
+    preprocessed_patients = remove_bad_pat_id(preprocessed_patients,
+                                              preprocessed_immunization)
+    df = pd.merge(preprocessed_patients, preprocessed_immunization,
+                  on='pat_id', how='outer')
+    df = df.reset_index(drop=True)
+    return df
