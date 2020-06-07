@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 
-# TODO: check DOB for strange dates
+
+# ------------- PATIENTS
 
 
 def remove_unnamed_column(patients) -> pd.DataFrame:
@@ -110,4 +111,8 @@ def preprocess_patients(patients, facilities) -> pd.DataFrame:
     df = remove_facilities(df, facilities)
     df = fill_missing_values(df, facilities)
     return df
+
+
+# ------------- IMMUNIZATION
+
 

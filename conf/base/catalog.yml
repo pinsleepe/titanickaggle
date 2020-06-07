@@ -7,6 +7,10 @@ immunization:
   type: pandas.CSVDataSet
   filepath: data/01_raw/immunization_db_v2.csv
 
+preprocessed_immunization:
+  type: pandas.CSVDataSet
+  filepath: data/02_intermediate/preprocessed_immunization.csv
+
 patients:
   type: pandas.CSVDataSet
   filepath: data/01_raw/patients_db_v2.csv
