@@ -42,3 +42,31 @@ label_table:
 model_table:
   type: pandas.CSVDataSet
   filepath: data/05_model_input/model_table.csv
+
+X_train:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/X_train.pickle
+
+X_test:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/X_test.pickle
+
+y_train:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/y_train.pickle
+
+y_test:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/y_test.pickle
+
+best_rfc_rs:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/best_rfc_rs.pickle
+
+best_rfc_g:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/best_rfc_g.pickle
+
+predictions:
+  type: pickle.PickleDataSet
+  filepath: data/07_model_output/predictions.pickle
