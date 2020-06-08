@@ -12,15 +12,17 @@ For more info on Kedro -> [documentation](https://kedro.readthedocs.io).
 
 ## Installing dependencies
 
-In a virtual environment with Kedro installed run:
+In a virtual environment with Python 3.7, run:
 
 ```
+pip install kedro
+kedro info
 kedro install
 ```
 
 ## Running Kedro
 
-You can run your Kedro project with:
+You can run your Kedro project and create all data files with:
 
 ```
 kedro run
@@ -31,7 +33,7 @@ kedro run
 Start a local notebook server:
 
 ```
-kedro jupyter notebook
+kedro jupyter lab
 ```
 
 If you want to run an IPython session:

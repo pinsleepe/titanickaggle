@@ -34,3 +34,11 @@ primary_table:
 feature_table:
   type: pandas.CSVDataSet
   filepath: data/04_feature/feature_table.csv
+
+label_table:
+  type: pandas.CSVDataSet
+  filepath: data/04_feature/label_table.csv
+
+model_table:
+  type: pandas.CSVDataSet
+  filepath: data/05_model_input/model_table.csv

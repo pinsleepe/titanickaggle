@@ -13,3 +13,6 @@ pytest>=3.4, <4.0
 wheel==0.32.2
 matplotlib==3.2.1
 numpy==1.18.4
+scikit-learn==0.22
+pandas==1.0.4
+cloudpickle==1.4.1

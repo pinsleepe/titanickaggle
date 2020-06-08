@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import math
+from sklearn.preprocessing import LabelEncoder
+
+# ------------- FEATURE TABLE
 
 
 def extract_temp_df(primary_table, pid):
@@ -123,3 +126,73 @@ def build_feature_table(primary_table):
         feature_df_list.append(pat_dict)
 
     return pd.DataFrame(feature_df_list)
+
+# ------------- LABEL TABLE
+
+
+def assign_label(x0, x1, x2, x3):
+    """
+    Assign `high` and `low` label to each patient based on a simple logic.
+    """
+    if (x0 < 4) & (x1 < 3) & (x2 < 4) & (x3 < 3):
+        label = 'high'
+    elif (x0 == 4) & (x3 < 3):
+        label = 'high'
+    elif (x3 == 3) & (x2 < 4):
+        label = 'high'
+    else:
+        label = 'low'
+    return label
+
+
+def cast2category(df):
+    """
+    Cast categorical data from object type to category.
+    """
+    df['region'] = df['region'].astype('category')
+    df['gender'] = df['gender'].astype('category')
+    df['first_vaccine'] = df['first_vaccine'].astype('category')
+    return df
+
+
+def create_label_table(feature_table):
+    """
+    Create dataframe with label column (based on feature table) and
+    cast categorical data from object type to category.
+    """
+    df = cast2category(feature_table)
+    df['label'] = df.apply(lambda x: assign_label(x.opv_by_4mths,
+                                                  x.dtp_by_4mths,
+                                                  x.opv_by_6mths,
+                                                  x.dtp_by_6mths), axis=1)
+    return df
+
+
+# ------------- MODEL TABLE
+
+def encode_categories(label_table):
+    """
+    Convert each value in a column to a number.
+    """
+    lb_make = LabelEncoder()
+    label_table['region_code'] = lb_make.fit_transform(label_table['region'])
+    label_table['gender_code'] = lb_make.fit_transform(label_table['gender'])
+    label_table['first_vaccine_code'] = lb_make.fit_transform(label_table['first_vaccine'])
+    return label_table
+
+
+def model_input_table(label_table):
+    """
+    Create table for the model training.
+    """
+    df = label_table[['facility', 'first_vaccine_code', 'gender_code', 'region_code', 'dtp_by_4mths',
+                      'opv_by_4mths', 'enrollment_age', 'label']]
+    return df
+
+
+def create_model_table(label_table):
+    """
+    Create table for the model training.
+    """
+    df = encode_categories(label_table)
+    return model_input_table(df)
