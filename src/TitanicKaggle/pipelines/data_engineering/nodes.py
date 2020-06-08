@@ -173,14 +173,11 @@ def remove_bad_pat_id(preprocessed_patients, preprocessed_immunization):
     return preprocessed_patients[~preprocessed_patients.pat_id.isin(bad_pat_id)]
 
 
-def build_primary_table(preprocessed_patients, preprocessed_immunization):
+def build_primary_table(clean_patients, preprocessed_immunization):
     """
     Join preprocessed_patients and preprocessed_immunization
     dataframes. Drop successful == False records.
     """
-    preprocessed_patients = remove_bad_pat_id(preprocessed_patients,
-                                              preprocessed_immunization)
-    df = pd.merge(preprocessed_patients, preprocessed_immunization,
-                  on='pat_id', how='outer')
+    df = pd.merge(clean_patients, preprocessed_immunization, on='pat_id', how='outer')
     df = df.reset_index(drop=True)
     return df

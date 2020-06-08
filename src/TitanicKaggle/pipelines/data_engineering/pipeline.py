@@ -3,7 +3,8 @@ from TitanicKaggle.pipelines.data_engineering.nodes import (
     create_facility,
     preprocess_patients,
     preprocess_immunization,
-    build_primary_table
+    build_primary_table,
+    remove_bad_pat_id
 )
 
 
@@ -29,10 +30,16 @@ def create_pipeline(**kwargs):
                 name="preprocessing_immunization",
             ),
             node(
+                func=remove_bad_pat_id,
+                inputs=["preprocessed_patients", "preprocessed_immunization"],
+                outputs="clean_patients",
+                name="removing_patients_with_no_immunization",
+            ),
+            node(
                 func=build_primary_table,
-                inputs=['preprocessed_patients', 'preprocessed_immunization'],
+                inputs=["clean_patients", "preprocessed_immunization"],
                 outputs="primary_table",
-                name="building_primary_table",
+                name="creating_primary_table",
             ),
         ]
     )
