@@ -196,7 +196,7 @@ def model_input_table(label_table):
     """
     Create table for the model training.
     """
-    df = label_table[['facility', 'first_vaccine_code', 'gender_code', 'region_code', 'dtp_by_4mths',
+    df = label_table[['pat_id', 'facility', 'first_vaccine_code', 'gender_code', 'region_code', 'dtp_by_4mths',
                       'opv_by_4mths', 'enrollment_age', 'label_code']]
     return df
 
@@ -214,7 +214,7 @@ def split_data(data: pd.DataFrame, parameters: Dict) -> List:
     Splits data into training and test sets.
     """
     X = data[
-        [
+        [   'pat_id',
             'facility',
             'first_vaccine_code',
             'gender_code',
@@ -238,6 +238,7 @@ def parameter_tuning_randomized_search(X_train, y_train):
     """
 
     """
+    X_train = X_train[0:,1:]
     n_estimators = [int(x) for x in np.linspace(start=20, stop=100, num=5)]
     max_features = ['auto', 'sqrt']
     max_depth = [int(x) for x in np.linspace(10, 50, num=5)]
@@ -285,6 +286,7 @@ def parameter_tuning_grid(X_train, y_train):
     """
 
     """
+    X_train = X_train[0:,1:]
     bootstrap = [False]
     max_depth = [30, 40, 50]
     max_features = ['sqrt']
@@ -335,6 +337,9 @@ def model_fit_and_performance(best_rfc, X_train, y_train, X_test, y_test):
     For performance analysis the the classification report
     and the accuracy on both training and test data
     """
+    X_train = X_train[0:,1:]
+    X_test = X_test[0:,1:]
+
     best_rfc.fit(X_train, y_train)
     rfc_pred = best_rfc.predict(X_test)
 
