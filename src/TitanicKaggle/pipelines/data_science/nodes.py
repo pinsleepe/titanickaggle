@@ -152,6 +152,7 @@ def cast2category(df):
     df['region'] = df['region'].astype('category')
     df['gender'] = df['gender'].astype('category')
     df['first_vaccine'] = df['first_vaccine'].astype('category')
+    df['label'] = df['label'].astype('category')
     return df
 
 
@@ -178,6 +179,7 @@ def encode_categories(label_table):
     label_table['region_code'] = lb_make.fit_transform(label_table['region'])
     label_table['gender_code'] = lb_make.fit_transform(label_table['gender'])
     label_table['first_vaccine_code'] = lb_make.fit_transform(label_table['first_vaccine'])
+    label_table['label_code'] = lb_make.fit_transform(label_table['label'])
     return label_table
 
 
@@ -186,7 +188,7 @@ def model_input_table(label_table):
     Create table for the model training.
     """
     df = label_table[['facility', 'first_vaccine_code', 'gender_code', 'region_code', 'dtp_by_4mths',
-                      'opv_by_4mths', 'enrollment_age', 'label']]
+                      'opv_by_4mths', 'enrollment_age', 'label_code']]
     return df
 
 
@@ -196,3 +198,6 @@ def create_model_table(label_table):
     """
     df = encode_categories(label_table)
     return model_input_table(df)
+
+# ------------- MODEL
+
